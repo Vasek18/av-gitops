@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dragonfly-operator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/dragonflydb/dragonfly-operator.git
+    path: charts/dragonfly-operator
+    targetRevision: v1.6.1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dragonfly-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
