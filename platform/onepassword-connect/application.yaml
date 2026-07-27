@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: onepassword-connect
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://1password.github.io/connect-helm-charts
+    chart: connect
+    targetRevision: 2.4.1
+    helm:
+      values: |
+        connect:
+          credentialsName: onepassword-connect-credentials
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: onepassword-connect
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
