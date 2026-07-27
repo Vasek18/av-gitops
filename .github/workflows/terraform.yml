@@ -15,18 +15,22 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
   TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
   TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
   AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_SECRET_KEY }}
-  AWS_DEFAULT_REGION: eu-central
 
 jobs:
   plan:
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: terraform/cluster
@@ -49,11 +53,24 @@ jobs:
         run: terraform validate
 
       - name: terraform plan
-        run: terraform plan -input=false -no-color
+        run: |
+          set -o pipefail
+          terraform plan -input=false -no-color | tee plan.txt
+
+      - name: Write plan to step summary
+        if: always()
+        run: |
+          {
+            echo "### Terraform Plan"
+            echo '```'
+            cat plan.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   apply:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment: production
     defaults:
       run:

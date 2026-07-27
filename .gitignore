@@ -3,6 +3,8 @@
 *.tfstate
 *.tfstate.*
 *.tfplan
+*_kustomization_backup.yaml
+plan.txt
 crash.log
 crash.*.log
 override.tf

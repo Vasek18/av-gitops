@@ -2,6 +2,7 @@ terraform {
   backend "s3" {
     bucket = "av-gitops-tfstate"
     key    = "cluster/terraform.tfstate"
+    region = "hel1"
 
     endpoints = {
       s3 = "https://hel1.your-objectstorage.com"
