@@ -1,0 +1,19 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfvars
+*.tfvars.json
+
+# Kubeconfig fetched locally for debugging — never commit cluster credentials
+kubeconfig*.yaml
+
+# JetBrains IDE
+.idea/
