@@ -49,9 +49,12 @@ jobs:
       - name: terraform init
         run: terraform init -input=false
 
-      - name: terraform validate
-        run: terraform validate
-
+      # No standalone `terraform validate` step: the kube-hetzner module's own
+      # variable validation blocks (e.g. `var.cluster_token == null || trimspace(...)`)
+      # trip Terraform 1.10.1's static-analysis validate pass, which doesn't reliably
+      # short-circuit `||`/`&&` for null values the way a real plan/apply does.
+      # `terraform plan` performs equivalent validation using concretely resolved
+      # values, so it's safe to skip the standalone validate step.
       - name: terraform plan
         run: |
           set -o pipefail
