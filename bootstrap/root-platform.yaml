@@ -11,6 +11,7 @@ spec:
     path: platform
     directory:
       recurse: true
+      exclude: "cert-manager/cluster-issuers/*,external-secrets/cluster-secret-stores/*"
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
