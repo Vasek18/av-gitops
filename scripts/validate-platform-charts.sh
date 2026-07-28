@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for app in platform/*/application.yaml; do
+REPO_URL="https://github.com/Vasek18/av-gitops.git"
+
+for app in platform/applications/*.yaml; do
   name=$(yq eval '.metadata.name' "$app")
   chart=$(yq eval '.spec.source.chart // ""' "$app")
   git_path=$(yq eval '.spec.source.path // ""' "$app")
@@ -14,8 +16,18 @@ for app in platform/*/application.yaml; do
   echo "== $name ($app) =="
 
   if [[ -n "$git_path" ]]; then
-    chart_dir=$(mktemp -d)
-    git -c advice.detachedHead=false clone --quiet --depth 1 --branch "$target_revision" "$repo_url" "$chart_dir"
+    if [[ "$repo_url" == "$REPO_URL" ]]; then
+      chart_dir="."
+    else
+      chart_dir=$(mktemp -d)
+      git -c advice.detachedHead=false clone --quiet --depth 1 --branch "$target_revision" "$repo_url" "$chart_dir"
+    fi
+
+    if [[ ! -f "$chart_dir/$git_path/Chart.yaml" ]]; then
+      echo "skip (not a Helm chart — plain-manifest Application)"
+      continue
+    fi
+
     helm template test "$chart_dir/$git_path" -f "$values_file" > /dev/null
   elif [[ "$repo_url" == http://* || "$repo_url" == https://* ]]; then
     helm repo add "$name" "$repo_url" --force-update > /dev/null
