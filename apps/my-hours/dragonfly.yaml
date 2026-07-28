@@ -1,0 +1,7 @@
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: my-hours
+  namespace: my-hours
+spec:
+  replicas: 1
