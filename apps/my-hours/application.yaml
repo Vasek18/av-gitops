@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-hours
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Vasek18/my-hours-go.git
+    targetRevision: main
+    path: charts/my-hours
+    helm:
+      values: |
+        backend:
+          env:
+            appUrl: https://my-hours.65.109.223.208.sslip.io
+            redisAddr: my-hours:6379
+          databaseSecretName: my-hours-app
+          secretKeys:
+            databaseUrl: uri
+          sessionSecretName: my-hours-backend-secret
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-hours
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

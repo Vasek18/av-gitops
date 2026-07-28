@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-hours
+  namespace: my-hours
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - my-hours.65.109.223.208.sslip.io
+      secretName: my-hours-tls
+  rules:
+    - host: my-hours.65.109.223.208.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-hours-frontend
+                port:
+                  number: 80
