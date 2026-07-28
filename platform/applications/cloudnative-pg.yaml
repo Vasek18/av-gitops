@@ -9,6 +9,10 @@ spec:
     repoURL: https://cloudnative-pg.github.io/charts
     chart: cloudnative-pg
     targetRevision: 0.29.0
+    helm:
+      values: |
+        crds:
+          create: false
   destination:
     server: https://kubernetes.default.svc
     namespace: cnpg-system
