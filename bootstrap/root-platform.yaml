@@ -8,10 +8,9 @@ spec:
   source:
     repoURL: https://github.com/Vasek18/av-gitops.git
     targetRevision: main
-    path: platform
+    path: platform/applications
     directory:
       recurse: true
-      exclude: "cert-manager/cluster-issuers/*,external-secrets/cluster-secret-stores/*"
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
