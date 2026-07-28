@@ -4,7 +4,7 @@ metadata:
   name: my-hours
   namespace: my-hours
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   ingressClassName: nginx
   tls:
