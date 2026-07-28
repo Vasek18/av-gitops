@@ -16,8 +16,7 @@ spec:
             appUrl: https://my-hours.65.109.223.208.sslip.io
             redisAddr: my-hours:6379
           databaseSecretName: my-hours-app
-          secretKeys:
-            databaseUrl: uri
+          databaseSecretKey: uri
           sessionSecretName: my-hours-backend-secret
   destination:
     server: https://kubernetes.default.svc
