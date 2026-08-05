@@ -13,7 +13,7 @@ spec:
         values: |
           backend:
             env:
-              appUrl: https://my-hours.65.109.223.208.sslip.io
+              appUrl: https://my-hours.77.42.31.36.sslip.io
               redisAddr: my-hours:6379
             databaseSecretName: my-hours-app
             databaseSecretKey: uri
