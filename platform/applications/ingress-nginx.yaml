@@ -12,11 +12,22 @@ spec:
     helm:
       values: |
         controller:
+          # No managed Hetzner LB: run the controller as a DaemonSet and bind
+          # 80/443 directly on each node via hostPort. DNS (sslip.io host) points
+          # at a node's public IPv4. k3s Traefik is disabled, so 80/443 are free.
+          kind: DaemonSet
+          hostPort:
+            enabled: true
           service:
-            type: LoadBalancer
-            annotations:
-              load-balancer.hetzner.cloud/location: hel1
-              load-balancer.hetzner.cloud/use-private-ip: "true"
+            # ClusterIP (not LoadBalancer) so the Hetzner CCM provisions no LB.
+            type: ClusterIP
+          # control-plane node is untainted (terraform taints=[]) so a DaemonSet
+          # pod lands there anyway; the toleration guarantees it even if that
+          # changes, since DNS points at the control-plane node's IP.
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           ingressClassResource:
             default: true
   destination:

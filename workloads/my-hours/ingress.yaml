@@ -9,10 +9,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - my-hours.65.109.223.208.sslip.io
+        - my-hours.77.42.31.36.sslip.io
       secretName: my-hours-tls
   rules:
-    - host: my-hours.65.109.223.208.sslip.io
+    - host: my-hours.77.42.31.36.sslip.io
       http:
         paths:
           - path: /
