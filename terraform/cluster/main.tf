@@ -56,6 +56,30 @@ module "kube_hetzner" {
   enable_cert_manager    = false
   load_balancer_location = "hel1"
 
+  # Ingress is served directly on each node's public IP via ingress-nginx
+  # hostPort (no managed LB — see platform/applications/ingress-nginx.yaml).
+  # The module does not open public 80/443 on its own here, and the old LB
+  # reached nodes over the private network, so these ports were closed. Open
+  # them so external traffic and Let's Encrypt HTTP-01 challenges reach the node.
+  extra_firewall_rules = [
+    {
+      description     = "Allow HTTP to node ingress (hostPort, no LB)"
+      direction       = "in"
+      protocol        = "tcp"
+      port            = "80"
+      source_ips      = ["0.0.0.0/0", "::/0"]
+      destination_ips = []
+    },
+    {
+      description     = "Allow HTTPS to node ingress (hostPort, no LB)"
+      direction       = "in"
+      protocol        = "tcp"
+      port            = "443"
+      source_ips      = ["0.0.0.0/0", "::/0"]
+      destination_ips = []
+    },
+  ]
+
   # Pin to a k3s minor version explicitly (the module default of following the
   # "stable" channel would otherwise auto-upgrade Kubernetes without a
   # corresponding, reviewable Git change). automatically_upgrade_os is turned
