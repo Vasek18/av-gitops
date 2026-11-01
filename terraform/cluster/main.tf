@@ -1,6 +1,6 @@
 module "kube_hetzner" {
   source  = "kube-hetzner/kube-hetzner/hcloud"
-  version = "3.0.1"
+  version = "3.2.1"
 
   providers = {
     hcloud = hcloud
